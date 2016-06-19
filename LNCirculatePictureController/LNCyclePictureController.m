@@ -25,6 +25,10 @@
 // 设置索引
 @property (nonatomic,assign) NSInteger index;
 
+
+// 设置下一页索引
+@property (nonatomic,strong) NSIndexPath *nextIndex;
+
 // 设置页码
 @property (nonatomic,strong) UIPageControl * pageControl;
 
@@ -68,7 +72,23 @@ static NSString *cellID = @"cell";
             [self timerStart];
             
         }];
+    }else if(self.dataContentType == ContentTypeImageURL){
+        
+        NSIndexPath *originalIndex = [NSIndexPath indexPathForItem:0 inSection:1];
+        NSLog(@"ori %zd----%zd",originalIndex.section,originalIndex.item);
+        __weak typeof(self) weakSelf = self;
+        [weakSelf.collectionView scrollToItemAtIndexPath:originalIndex atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
+        
+        [self setupPageControl];
+        
+        // 开启定时器事件
+        if (self.isTimerOpen) {
+            [self timerStart];
+        }
+        
     }else if (self.isTimerOpen){
+        
+        
         // 开启定时器事件
         [self timerStart];
     }
@@ -91,7 +111,7 @@ static NSString *cellID = @"cell";
 - (void)nextPicture{
     
     // 索引加1
-    self.index = [[self.collectionView indexPathsForVisibleItems] firstObject].item;
+    self.index = [[self.collectionView indexPathsForVisibleItems] lastObject].item;
     
     self.index++;
     NSIndexPath *nextIndex;
@@ -105,7 +125,8 @@ static NSString *cellID = @"cell";
         nextIndex = [NSIndexPath indexPathForItem:self.index inSection:1];
         
     }
-    [self.collectionView scrollToItemAtIndexPath:nextIndex atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
+    self.nextIndex = nextIndex;
+    [self.collectionView scrollToItemAtIndexPath:self.nextIndex atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
     self.pageControl.currentPage = self.index;
 
 }
@@ -131,6 +152,10 @@ static NSString *cellID = @"cell";
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     if (self.isTimerOpen) {
         [self timerStart];
+    }else{
+        NSIndexPath *currentIndex = [[self.collectionView indexPathsForVisibleItems]lastObject];
+        NSLog(@"%@",currentIndex);
+        self.pageControl.currentPage = currentIndex.item;
     }
     
 }
@@ -139,7 +164,7 @@ static NSString *cellID = @"cell";
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
     
     // 获得当前索引
-    NSIndexPath *currentIndex = [[self.collectionView indexPathsForVisibleItems] firstObject];
+    NSIndexPath *currentIndex = self.nextIndex;
 
     if (currentIndex.section == 1) {
         return ;
