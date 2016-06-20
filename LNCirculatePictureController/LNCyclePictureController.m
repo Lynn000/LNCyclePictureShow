@@ -38,6 +38,9 @@
 // 设置是否开启定时器
 @property (nonatomic,assign) BOOL isTimerOpen;
 
+// 设置view大小
+@property (nonatomic, strong) NSValue *viewFrame;
+
 @end
 
 
@@ -64,7 +67,10 @@ static NSString *cellID = @"cell";
             [weakSelf.collectionView reloadData];
             
             // 进行设置初始位置
-            [weakSelf scrollToOriginalPosition];
+            NSIndexPath *originalIndex = [NSIndexPath indexPathForItem:0 inSection:1];
+            NSLog(@"ori %zd----%zd",originalIndex.section,originalIndex.item);
+            __weak typeof(self) weakSelf = self;
+            [weakSelf.collectionView scrollToItemAtIndexPath:originalIndex atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
             
             [self setupPageControl];
             
@@ -87,8 +93,7 @@ static NSString *cellID = @"cell";
         }
         
     }else if (self.isTimerOpen){
-        
-        
+
         // 开启定时器事件
         [self timerStart];
     }
@@ -126,6 +131,7 @@ static NSString *cellID = @"cell";
         
     }
     self.nextIndex = nextIndex;
+    NSLog(@"next %zd---%zd",self.nextIndex.section,self.nextIndex.item);
     [self.collectionView scrollToItemAtIndexPath:self.nextIndex atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
     self.pageControl.currentPage = self.index;
 
@@ -152,11 +158,12 @@ static NSString *cellID = @"cell";
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     if (self.isTimerOpen) {
         [self timerStart];
-    }else{
-        NSIndexPath *currentIndex = [[self.collectionView indexPathsForVisibleItems]lastObject];
-        NSLog(@"%@",currentIndex);
-        self.pageControl.currentPage = currentIndex.item;
     }
+//    else{
+//        NSIndexPath *currentIndex = [[self.collectionView indexPathsForVisibleItems]lastObject];
+//        NSLog(@"%@",currentIndex);
+//        self.pageControl.currentPage = currentIndex.item;
+//    }
     
 }
 
@@ -170,17 +177,11 @@ static NSString *cellID = @"cell";
         return ;
     }
     currentIndex = [NSIndexPath indexPathForItem:currentIndex.item inSection:1];
+    NSLog(@"scorll end:%zd ---- %zd",currentIndex.section,currentIndex.item);
     [self.collectionView scrollToItemAtIndexPath:currentIndex atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
 }
 
 #pragma mark - 初始化相关信息
-// MARK: - 滚动到初始位置
-- (void)scrollToOriginalPosition{
-    
-    NSIndexPath *originalIndex = [NSIndexPath indexPathForItem:0 inSection:1];
-    __weak typeof(self) weakSelf = self;
-    [weakSelf.collectionView scrollToItemAtIndexPath:originalIndex atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
-}
 
 // MARK: - 设置collectionView相关样式信息
 - (void)setupCollectionView{
@@ -201,15 +202,18 @@ static NSString *cellID = @"cell";
 - (void)setupPageControl{
     
     // 创建pageControl
-    self.pageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, self.collectionView.bounds.size.height * 0.8, self.collectionView.bounds.size.width, 30)];
+    CGRect frame = [self.viewFrame CGRectValue];
+    
+    self.pageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, frame.size.height * 0.8, frame.size.width, 30)];
     self.pageControl.currentPage = self.index;
     self.pageControl.numberOfPages = self.pictureArray.count;
     
     self.pageControl.currentPageIndicatorTintColor = [UIColor grayColor];
     self.pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-
+    
     [self.view addSubview:self.pageControl];
     [self.view bringSubviewToFront:self.pageControl];
+
     
 }
 
@@ -233,6 +237,7 @@ static NSString *cellID = @"cell";
     cyclePicController.fieldName = fieldName;
     cyclePicController.pictureArray = picArray;
     cyclePicController.isTimerOpen = isOn;
+    cyclePicController.viewFrame = [NSValue valueWithCGRect:viewFrame];
     if (contentType == ContentTypeJSON) {
         cyclePicController.imageUrl = [NSURL URLWithString:picArray.firstObject];
     }
