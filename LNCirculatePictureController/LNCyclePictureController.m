@@ -83,7 +83,7 @@ static NSString *cellID = @"cell";
         NSIndexPath *originalIndex = [NSIndexPath indexPathForItem:0 inSection:1];
         NSLog(@"ori %zd----%zd",originalIndex.section,originalIndex.item);
         __weak typeof(self) weakSelf = self;
-        [weakSelf.collectionView scrollToItemAtIndexPath:originalIndex atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
+         [weakSelf.collectionView scrollToItemAtIndexPath:originalIndex atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
         
         [self setupPageControl];
         
@@ -103,6 +103,7 @@ static NSString *cellID = @"cell";
 #pragma mark - 图片轮播
 // MARK: - 定时器事件
 - (void)timerStart{
+
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
@@ -299,12 +300,12 @@ static NSString *cellID = @"cell";
 }
 
 #pragma mark - 懒加载
-- (NSArray *)pictureArray{
-    
-    if (_pictureArray == nil) {
-        _pictureArray = [NSArray array];
-    }
-    return _pictureArray;
-}
+//- (NSArray *)pictureArray{
+//    
+//    if (_pictureArray == nil) {
+//        _pictureArray = [NSArray array];
+//    }
+//    return _pictureArray;
+//}
 
 @end

@@ -47,7 +47,7 @@
         self.cycleShow.collectionView.backgroundColor = [UIColor blueColor];
         //
             self.tableView.tableHeaderView = self.cycleShow.view;
-            [self.view addSubview:self.cycleShow.view];
+//            [self.view addSubview:self.cycleShow.view];
                           //cyclePictureControllerWithJSONUrl:@"http://127.0.0.1/image.json" andFieldName:@"imageUrl" andViewFrame:CGRectMake(0, 0, 375, 200) andDirection:UICollectionViewScrollDirectionHorizontal andIsTimerOn:YES];
         //
         //
