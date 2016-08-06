@@ -21,12 +21,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
     
-    
-    [LNCyclePictureController cyclePictureControllerWithJSONUrl:@"http://127.0.0.1/image.json" andFieldName:@"imageUrl" andViewFrame:CGRectMake(0, 0, 375, 200) andDirection:UICollectionViewScrollDirectionHorizontal andIsTimerOn:YES];
-
-
+    self.cycleShow = [LNCyclePictureController cyclePictureControllerWithJSONUrl:@"http://127.0.0.1/image.json" andFieldName:@"imageUrl" andViewFrame:CGRectMake(0, 0, 375, 200) andDirection:UICollectionViewScrollDirectionHorizontal andIsTimerOn:YES];
 
     self.cycleShow.collectionView.backgroundColor = [UIColor blueColor];
 

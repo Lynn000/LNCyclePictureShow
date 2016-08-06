@@ -20,6 +20,7 @@
 // 设置JSON数据中的字段
 @property (nonatomic,copy) NSString *fieldName;
 
+// 图片URL
 @property (nonatomic,strong) NSURL *imageUrl;
 
 // 设置索引
